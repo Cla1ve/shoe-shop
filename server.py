@@ -90,13 +90,13 @@ def stock_label(total):
 
 def product_dict(row, ordered):
     price_final, has_discount = final_price(row["price"], row["id"] in ordered)
-    total = row["total_quantity"] or 0
+    total = row["total_qty"] or 0
     return {
         "id": row["id"], "name": row["name"], "category": row["category"], "manufacturer": row["manufacturer"],
         "description": row["description"] or "", "composition": row["composition"] or "",
         "price": row["price"], "price_final": price_final, "discount": has_discount,
         "image": row["image"] or "", "total_quantity": total, "stock_label": stock_label(total),
-        "low_stock": total <= LOW_STOCK,
+        "low_stock": total < LOW_STOCK,
     }
 
 

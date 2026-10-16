@@ -199,7 +199,7 @@ function imageNode(image, alt, className) {
 }
 
 function renderCatalog() {
-    const grid = $('#catalog');
+    const grid = $('#catalogue');
     clear(grid);
     $('#empty').hidden = state.products.length > 0;
     $('#counter').textContent = state.products.length ? 'Найдено моделей: ' + state.products.length : '';
