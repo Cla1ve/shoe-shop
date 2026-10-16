@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Магазин обуви</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/">Обувной магазин</a>
+            <nav class="topnav" id="topnav">
+                <!-- кнопки входа, корзины и заказов рисует app.js, в зависимости от роли -->
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <h1>Каталог обуви</h1>
+
+        <section class="toolbar" aria-label="Фильтры каталога">
+            <label class="field">
+                <span>Категория</span>
+                <select id="filter-category"></select>
+            </label>
+            <label class="field field-grow">
+                <span>Поиск</span>
+                <input id="filter-search" type="search" placeholder="Название, производитель, описание" autocomplete="off">
+            </label>
+            <label class="field">
+                <span>Сортировка</span>
+                <select id="filter-sort">
+                    <option value="">Без сортировки</option>
+                    <option value="price_asc">Цена по возрастанию</option>
+                    <option value="price_desc">Цена по убыванию</option>
+                </select>
+            </label>
+        </section>
+
+        <p class="counter" id="counter" aria-live="polite"></p>
+        <section class="grid" id="catalog" aria-live="polite"></section>
+        <p class="empty" id="empty" hidden>По вашему запросу ничего не найдено.</p>
+    </main>
+
+    <footer class="footer">Магазин обуви · учебный проект МДК 04.01 · Маматисаков Э.С., 4ИСП9-45</footer>
+
+    <!-- окно входа -->
+    <div class="overlay" id="login-modal" hidden>
+        <div class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="login-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <h2 id="login-title">Вход</h2>
+            <p class="muted">Пароль не нужен, введите ваш логин.</p>
+            <form id="login-form" novalidate>
+                <label class="field">
+                    <span>Логин</span>
+                    <input id="login-input" type="text" placeholder="Например, isivanov" autocomplete="off">
+                </label>
+                <p class="error" id="login-error" role="alert"></p>
+                <button class="btn btn-primary btn-block" type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- карточка товара -->
+    <div class="overlay" id="product-modal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="product-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <div class="product-view" id="product-view"></div>
+        </div>
+    </div>
+
+    <!-- корзина -->
+    <div class="overlay" id="cart-modal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <h2 id="cart-title">Корзина</h2>
+            <div id="cart-view"></div>
+        </div>
+    </div>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
