@@ -80,6 +80,35 @@
         </div>
     </div>
 
+    <!-- список заказов (менеджер и администратор) -->
+    <div class="overlay" id="orders-modal" hidden>
+        <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="orders-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <div class="modal-head">
+                <h2 id="orders-title">Заказы</h2>
+                <button class="btn btn-primary btn-small" id="add-order-btn" type="button">Добавить заказ</button>
+            </div>
+            <div id="orders-view"></div>
+        </div>
+    </div>
+
+    <!-- состав заказа -->
+    <div class="overlay" id="order-modal" hidden>
+        <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="order-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <div id="order-view"></div>
+        </div>
+    </div>
+
+    <!-- новый заказ вручную -->
+    <div class="overlay" id="neworder-modal" hidden>
+        <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="neworder-title">
+            <button class="modal-close" data-close aria-label="Закрыть">×</button>
+            <h2 id="neworder-title">Новый заказ</h2>
+            <div id="neworder-view"></div>
+        </div>
+    </div>
+
     <div class="toasts" id="toasts" aria-live="polite"></div>
 
     <script src="/static/app.js"></script>

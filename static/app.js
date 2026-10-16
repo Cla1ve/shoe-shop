@@ -185,11 +185,6 @@ function logout() {
     toast('Вы вышли из системы');
 }
 
-// пока панель заказов не готова, кнопка показывает подсказку
-function openOrders() {
-    toast('Раздел заказов появится в следующей версии', 'warn');
-}
-
 // ---------- каталог ----------
 
 function imageNode(image, alt, className) {
@@ -417,6 +412,273 @@ async function checkout() {
     }
 }
 
+// ---------- заказы: менеджер и администратор ----------
+
+function isAdmin() {
+    return Boolean(state.user) && state.user.role === 'Администратор';
+}
+
+function formatDate(iso) {
+    const [y, m, d] = iso.split('-');
+    return d + '.' + m + '.' + y;
+}
+
+async function openOrders() {
+    openModal('orders-modal');
+    await loadOrders();
+}
+
+async function loadOrders() {
+    const view = $('#orders-view');
+    clear(view);
+    let orders;
+    try {
+        orders = await api('/api/orders');
+    } catch (e) {
+        toast(e.message, 'error');
+        return;
+    }
+    if (!orders.length) {
+        view.append(el('p', { class: 'empty' }, 'Заказов пока нет.'));
+        return;
+    }
+    const body = el('tbody', {});
+    orders.forEach((o) => {
+        body.append(el('tr', { 'data-order': o.id },
+            el('td', {}, '№ ' + o.id),
+            el('td', {}, formatDate(o.order_date)),
+            el('td', {}, o.client),
+            el('td', { class: 'num' }, String(o.items_count)),
+            el('td', { class: 'num' }, formatPrice(o.total)),
+            el('td', {}, el('button', { class: 'btn btn-small open-order', onclick: () => openOrder(o.id) }, 'Открыть'))));
+    });
+    view.append(el('table', {},
+        el('thead', {}, el('tr', {}, el('th', {}, 'Номер'), el('th', {}, 'Дата'), el('th', {}, 'Клиент'),
+            el('th', { class: 'num' }, 'Позиций'), el('th', { class: 'num' }, 'Сумма'), el('th', {}, ''))),
+        body));
+}
+
+// состав заказа; администратор может поменять дату и удалить позиции
+async function openOrder(id) {
+    let order;
+    try {
+        order = await api('/api/order?id=' + id);
+    } catch (e) {
+        toast(e.message, 'error');
+        return;
+    }
+    const view = $('#order-view');
+    clear(view);
+    const removed = new Set();                      // номера позиций, которые администратор отметил на удаление
+    const admin = isAdmin();
+    const dateInput = el('input', { type: 'date', id: 'order-date', value: order.order_date, disabled: !admin });
+    const totalNode = el('span', { id: 'order-total' }, formatPrice(order.total));
+
+    const body = el('tbody', {});
+    order.items.forEach((item) => {
+        const row = el('tr', { 'data-item': item.item_id },
+            el('td', {}, item.name, el('div', { class: 'muted' }, item.manufacturer)),
+            el('td', {}, String(item.size)),
+            el('td', { class: 'num' }, item.quantity + ' шт.'),
+            el('td', { class: 'num' }, formatPrice(item.unit_price)),
+            el('td', { class: 'num' }, formatPrice(item.sum)),
+            admin ? el('td', {}) : null);
+        if (admin) {
+            const button = el('button', { class: 'btn btn-small btn-danger', type: 'button' }, 'Удалить');
+            button.addEventListener('click', () => {
+                if (removed.has(item.item_id)) {
+                    removed.delete(item.item_id);
+                    row.classList.remove('removed');
+                    button.textContent = 'Удалить';
+                } else {
+                    removed.add(item.item_id);
+                    row.classList.add('removed');
+                    button.textContent = 'Вернуть';
+                }
+                const left = order.items.filter((i) => !removed.has(i.item_id)).reduce((sum, i) => sum + i.sum, 0);
+                totalNode.textContent = formatPrice(left);
+            });
+            row.lastChild.append(button);
+        }
+        body.append(row);
+    });
+
+    const actions = el('div', { class: 'actions' });
+    if (admin) {
+        const save = el('button', { class: 'btn btn-primary', id: 'order-save', type: 'button' }, 'Сохранить изменения');
+        save.addEventListener('click', async () => {
+            if (!dateInput.value) {
+                toast('Укажите дату заказа', 'error');
+                return;
+            }
+            const allRemoved = removed.size === order.items.length;
+            if (removed.size && !confirm('Удалить позиций: ' + removed.size + '? Товар вернётся на склад.' +
+                (allRemoved ? ' Заказ останется без позиций и будет удалён.' : ''))) return;
+            save.disabled = true;
+            try {
+                const result = await api('/api/order/update', {
+                    method: 'POST',
+                    body: { id: order.id, order_date: dateInput.value, remove_item_ids: Array.from(removed) },
+                });
+                const text = result.deleted ? 'Заказ удалён' : 'Заказ сохранён' +
+                    (result.returned_to_stock ? ', на склад возвращено пар: ' + result.returned_to_stock : '');
+                toast(text, 'ok');
+                closeModal('order-modal');
+                loadOrders();
+                loadProducts();
+            } catch (e) {
+                toast(e.message, 'error');
+                save.disabled = false;
+            }
+        });
+        actions.append(save);
+    } else {
+        actions.append(el('span', { class: 'muted' }, 'Менять заказы может только администратор'));
+    }
+
+    view.append(
+        el('h2', { id: 'order-title' }, 'Заказ № ' + order.id),
+        el('div', { class: 'order-meta' },
+            el('div', {}, el('div', { class: 'muted' }, 'Клиент'), el('strong', {}, order.client)),
+            el('label', { class: 'field' }, el('span', {}, 'Дата заказа'), dateInput)),
+        el('table', {},
+            el('thead', {}, el('tr', {}, el('th', {}, 'Товар'), el('th', {}, 'Размер'), el('th', { class: 'num' }, 'Кол-во'),
+                el('th', { class: 'num' }, 'Цена'), el('th', { class: 'num' }, 'Сумма'), admin ? el('th', {}, '') : null)),
+            body),
+        el('div', { class: 'total-row' }, el('span', {}, 'Итого:'), totalNode),
+        actions);
+    openModal('order-modal');
+}
+
+// ручное добавление заказа: клиент, товар, размер, количество
+async function openNewOrder() {
+    let users;
+    try {
+        users = await api('/api/users');
+    } catch (e) {
+        toast(e.message, 'error');
+        return;
+    }
+    const clients = users.filter((u) => u.role === 'Клиент');
+    const view = $('#neworder-view');
+    clear(view);
+    const lines = [];                                // { product, size, quantity }
+    let current = null;                              // выбранный в списке товар вместе с размерами
+
+    const clientSelect = el('select', { id: 'no-client' }, clients.map((c) => el('option', { value: c.id }, c.full_name + ' (' + c.login + ')')));
+    const searchInput = el('input', { id: 'no-search', type: 'search', placeholder: 'Начните вводить название', autocomplete: 'off' });
+    const found = el('select', { id: 'no-found', size: '6', class: 'found-list', 'aria-label': 'Найденные товары' });
+    const sizeSelect = el('select', { id: 'no-size', disabled: true });
+    const qtyInput = el('input', { id: 'no-qty', type: 'number', min: '1', step: '1', value: '1' });
+    const errorBox = el('p', { class: 'error', role: 'alert' });
+    const linesBox = el('div', {});
+    const saveButton = el('button', { class: 'btn btn-primary', id: 'no-save', type: 'button', disabled: true }, 'Сохранить заказ');
+
+    function renderLines() {
+        clear(linesBox);
+        saveButton.disabled = lines.length === 0;
+        if (!lines.length) {
+            linesBox.append(el('p', { class: 'muted' }, 'Позиции пока не добавлены.'));
+            return;
+        }
+        const body = el('tbody', {});
+        lines.forEach((l, index) => {
+            const remove = el('button', { class: 'btn btn-small btn-danger', type: 'button' }, 'Убрать');
+            remove.addEventListener('click', () => {
+                lines.splice(index, 1);
+                renderLines();
+            });
+            body.append(el('tr', {},
+                el('td', {}, l.product.name),
+                el('td', {}, String(l.size.size)),
+                el('td', { class: 'num' }, l.quantity + ' шт.'),
+                el('td', { class: 'num' }, formatPrice(l.product.price_final * l.quantity)),
+                el('td', {}, remove)));
+        });
+        const total = lines.reduce((sum, l) => sum + l.product.price_final * l.quantity, 0);
+        linesBox.append(
+            el('table', {},
+                el('thead', {}, el('tr', {}, el('th', {}, 'Товар'), el('th', {}, 'Размер'), el('th', { class: 'num' }, 'Кол-во'), el('th', { class: 'num' }, 'Сумма'), el('th', {}, ''))),
+                body),
+            el('div', { class: 'total-row' }, el('span', {}, 'Итого:'), el('span', {}, formatPrice(total))));
+    }
+
+    async function search() {
+        clear(found);
+        try {
+            const list = await api('/api/products?search=' + encodeURIComponent(searchInput.value.trim()));
+            list.slice(0, 30).forEach((p) => found.append(el('option', { value: p.id }, p.name + ' · ' + p.manufacturer + ' · ' + formatPrice(p.price_final))));
+        } catch (e) {
+            toast(e.message, 'error');
+        }
+    }
+    searchInput.addEventListener('input', debounce(search, 300));
+
+    found.addEventListener('change', async () => {
+        errorBox.textContent = '';
+        try {
+            current = await api('/api/product?id=' + found.value);
+        } catch (e) {
+            toast(e.message, 'error');
+            return;
+        }
+        clear(sizeSelect);
+        current.sizes.filter((s) => s.quantity > 0).forEach((s) => sizeSelect.append(el('option', { value: s.size_id }, s.size + ' (' + s.quantity + ' шт.)')));
+        sizeSelect.disabled = !sizeSelect.options.length;
+        if (sizeSelect.disabled) errorBox.textContent = 'Этой модели нет на складе';
+    });
+
+    const addButton = el('button', { class: 'btn', id: 'no-add', type: 'button' }, 'Добавить в заказ');
+    addButton.addEventListener('click', () => {
+        errorBox.textContent = '';
+        if (!current) { errorBox.textContent = 'Выберите товар из списка'; return; }
+        if (sizeSelect.disabled || !sizeSelect.value) { errorBox.textContent = 'Выберите размер'; return; }
+        const size = current.sizes.find((s) => String(s.size_id) === sizeSelect.value);
+        const quantity = Number(qtyInput.value);
+        if (!Number.isInteger(quantity) || quantity < 1) { errorBox.textContent = 'Количество: целое число не меньше 1'; return; }
+        const same = lines.find((l) => l.product.id === current.id && l.size.size_id === size.size_id);
+        if ((same ? same.quantity : 0) + quantity > size.quantity) { errorBox.textContent = 'На складе только ' + size.quantity + ' шт. этого размера'; return; }
+        if (same) same.quantity += quantity;
+        else lines.push({ product: current, size: size, quantity: quantity });
+        renderLines();
+    });
+
+    saveButton.addEventListener('click', async () => {
+        saveButton.disabled = true;
+        try {
+            const result = await api('/api/order/create', {
+                method: 'POST',
+                body: {
+                    client_id: Number(clientSelect.value),
+                    items: lines.map((l) => ({ product_id: l.product.id, size_id: l.size.size_id, quantity: l.quantity })),
+                },
+            });
+            toast('Заказ № ' + result.order_id + ' сохранён, сумма ' + formatPrice(result.total), 'ok');
+            closeModal('neworder-modal');
+            loadOrders();
+            loadProducts();
+        } catch (e) {
+            toast(e.message, 'error');
+            saveButton.disabled = false;
+        }
+    });
+
+    view.append(
+        el('label', { class: 'field' }, el('span', {}, 'Клиент'), clientSelect),
+        el('div', { class: 'new-order-grid' },
+            el('div', {}, el('label', { class: 'field' }, el('span', {}, 'Поиск товара по наименованию'), searchInput), found),
+            el('div', {},
+                el('label', { class: 'field' }, el('span', {}, 'Размер'), sizeSelect),
+                el('label', { class: 'field' }, el('span', {}, 'Количество'), qtyInput),
+                errorBox, addButton)),
+        el('h3', {}, 'Состав заказа'),
+        linesBox,
+        el('div', { class: 'actions' }, saveButton));
+    renderLines();
+    search();
+    openModal('neworder-modal');
+}
+
 // ---------- запуск ----------
 
 async function init() {
@@ -425,6 +687,7 @@ async function init() {
     setupModals();
     setupFilters();
     $('#login-form').addEventListener('submit', submitLogin);
+    $('#add-order-btn').addEventListener('click', openNewOrder);
     renderNav();
     await loadCategories();
     await loadProducts();
