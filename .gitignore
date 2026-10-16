@@ -7,3 +7,4 @@ import.log
 server.log
 .vscode/
 .idea/
+server.out

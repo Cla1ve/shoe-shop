@@ -332,6 +332,7 @@ POST_ROUTES = {"/api/order/create": api_order_create, "/api/order/update": api_o
 
 class ShopHandler(BaseHTTPRequestHandler):
     server_version = "ShopServer/1.0"
+    head_only = False          # для запроса HEAD отправляем только заголовки
 
     def log_message(self, fmt, *args):
         log.info("%s %s", self.address_string(), fmt % args)
@@ -343,7 +344,8 @@ class ShopHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
-        self.wfile.write(data)
+        if not self.head_only:
+            self.wfile.write(data)
 
     def current_user(self, conn):
         login = self.headers.get("X-Login")
@@ -382,6 +384,11 @@ class ShopHandler(BaseHTTPRequestHandler):
         else:
             self.send_static(path)
 
+    def do_HEAD(self):
+        """HEAD отвечает так же, как GET, но без тела (нужно, например, чтобы проверить, есть ли файл картинки)."""
+        self.head_only = True
+        self.do_GET()
+
     def do_POST(self):
         path = urlparse(self.path).path
         if path not in POST_ROUTES:
@@ -417,7 +424,8 @@ class ShopHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-cache")
         self.end_headers()
-        self.wfile.write(data)
+        if not self.head_only:
+            self.wfile.write(data)
 
 
 def main():

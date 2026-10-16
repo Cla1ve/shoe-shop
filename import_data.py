@@ -176,8 +176,9 @@ def report(cur):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S",
-                        handlers=[logging.StreamHandler(), logging.FileHandler(LOG_PATH, encoding="utf-8")])
+    if not logging.getLogger().handlers:      # при повторном вызове (например, из тестов) логирование второй раз не настраиваем
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S",
+                            handlers=[logging.StreamHandler(), logging.FileHandler(LOG_PATH, encoding="utf-8")])
     if not os.path.exists(DB_PATH):
         log.error("нет файла shop.db, сначала запустите python3 create_db.py")
         return 1
