@@ -15,7 +15,7 @@ CHECKS = [
     ("queries.sql: восемь запросов", "queries.sql"),
     ("server.py: сервер и API", "server.py"),
     ("static/index.html, app.js, style.css", ["static/index.html", "static/app.js", "static/style.css"]),
-    ("static/uploads: картинки и заглушка", ["static/uploads/picture.png", "static/uploads/IMG_001.png"]),
+    ("static/uploads: картинки и заглушка", ["static/uploads/picture.png", "static/uploads/IMG_001.jpg"]),
     ("ER_diagram.pdf", "ER_diagram.pdf"),
     ("пять файлов импорта .xlsx", ["Products_import.xlsx", "Stock_Items_import.xlsx", "Sizes_import.xlsx", "Orders_import.xlsx", "Users_import.xlsx"]),
     ("errors_analysis.md", "errors_analysis.md"),
@@ -33,7 +33,7 @@ def main():
         ok = bool(found) if "или" in title else len(found) == len(files)
         print("[%s] %s" % ("ok" if ok else "НЕТ", title))
         bad += 0 if ok else 1
-    print("картинок товаров в static/uploads:", len(glob.glob("static/uploads/IMG_*.png")))
+    print("картинок товаров в static/uploads:", len(glob.glob("static/uploads/IMG_*.jpg")))
     print("итог:", "все файлы на месте" if not bad else "не хватает файлов: %d" % bad)
     return 1 if bad else 0
 
