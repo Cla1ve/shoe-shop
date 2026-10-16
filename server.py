@@ -96,7 +96,7 @@ def product_dict(row, ordered):
         "description": row["description"] or "", "composition": row["composition"] or "",
         "price": row["price"], "price_final": price_final, "discount": has_discount,
         "image": row["image"] or "", "total_quantity": total, "stock_label": stock_label(total),
-        "low_stock": total < LOW_STOCK,
+        "low_stock": total <= LOW_STOCK,
     }
 
 
