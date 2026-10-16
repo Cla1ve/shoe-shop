@@ -8,3 +8,5 @@ server.log
 .vscode/
 .idea/
 server.out
+restored_*.db
+dump_check.sql
