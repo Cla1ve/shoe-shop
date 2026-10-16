@@ -38,8 +38,11 @@ def get_or_create(cur, table, name):
     """Возвращает id записи с таким названием, при необходимости создаёт её."""
     if table not in NAME_TABLES:
         raise ValueError("неизвестная таблица справочника: %s" % table)
-    cur.execute("INSERT OR IGNORE INTO %s (name) VALUES (?)" % table, (name,))
-    return cur.execute("SELECT id FROM %s WHERE name = ?" % table, (name,)).fetchone()[0]
+    row = cur.execute("SELECT id FROM %s WHERE name = ?" % table, (name,)).fetchone()
+    if row:
+        return row[0]
+    cur.execute("INSERT INTO %s (name) VALUES (?)" % table, (name,))
+    return cur.lastrowid
 
 
 def import_sizes(cur):

@@ -6,7 +6,7 @@ CREATE TABLE Roles (
 );
 INSERT INTO Roles VALUES(1,'Администратор');
 INSERT INTO Roles VALUES(2,'Менеджер');
-INSERT INTO Roles VALUES(4,'Клиент');
+INSERT INTO Roles VALUES(3,'Клиент');
 CREATE TABLE Users (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     login     TEXT NOT NULL UNIQUE,
@@ -17,23 +17,23 @@ CREATE TABLE Users (
 INSERT INTO Users VALUES(1,'masokolova','Соколова Мария Андреевна',1);
 INSERT INTO Users VALUES(2,'anpetrov','Петров Алексей Николаевич',2);
 INSERT INTO Users VALUES(3,'ovkuznetsova','Кузнецова Ольга Викторовна',2);
-INSERT INTO Users VALUES(4,'isivanov','Иванов Сергей Игоревич',4);
-INSERT INTO Users VALUES(5,'edsmirnova','Смирнова Екатерина Дмитриевна',4);
-INSERT INTO Users VALUES(6,'dovolkov','Волков Дмитрий Олегович',4);
-INSERT INTO Users VALUES(7,'apmorozova','Морозова Анна Павловна',4);
-INSERT INTO Users VALUES(8,'asnovikov','Новиков Артём Сергеевич',4);
-INSERT INTO Users VALUES(9,'eifedorova','Фёдорова Елена Ивановна',4);
-INSERT INTO Users VALUES(10,'palebedev','Лебедев Павел Андреевич',4);
-INSERT INTO Users VALUES(11,'guest1','Громов Игорь Станиславович',4);
-INSERT INTO Users VALUES(12,'guest2','Орлова Татьяна Юрьевна',4);
+INSERT INTO Users VALUES(4,'isivanov','Иванов Сергей Игоревич',3);
+INSERT INTO Users VALUES(5,'edsmirnova','Смирнова Екатерина Дмитриевна',3);
+INSERT INTO Users VALUES(6,'dovolkov','Волков Дмитрий Олегович',3);
+INSERT INTO Users VALUES(7,'apmorozova','Морозова Анна Павловна',3);
+INSERT INTO Users VALUES(8,'asnovikov','Новиков Артём Сергеевич',3);
+INSERT INTO Users VALUES(9,'eifedorova','Фёдорова Елена Ивановна',3);
+INSERT INTO Users VALUES(10,'palebedev','Лебедев Павел Андреевич',3);
+INSERT INTO Users VALUES(11,'guest1','Громов Игорь Станиславович',3);
+INSERT INTO Users VALUES(12,'guest2','Орлова Татьяна Юрьевна',3);
 CREATE TABLE Categories (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
 );
 INSERT INTO Categories VALUES(1,'Женская обувь');
-INSERT INTO Categories VALUES(11,'Мужская обувь');
-INSERT INTO Categories VALUES(20,'Детская обувь');
-INSERT INTO Categories VALUES(26,'Спортивная обувь');
+INSERT INTO Categories VALUES(2,'Мужская обувь');
+INSERT INTO Categories VALUES(3,'Детская обувь');
+INSERT INTO Categories VALUES(4,'Спортивная обувь');
 CREATE TABLE Manufacturers (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
@@ -41,17 +41,17 @@ CREATE TABLE Manufacturers (
 INSERT INTO Manufacturers VALUES(1,'Salamander');
 INSERT INTO Manufacturers VALUES(2,'Rieker');
 INSERT INTO Manufacturers VALUES(3,'Ecco');
-INSERT INTO Manufacturers VALUES(5,'Camper');
-INSERT INTO Manufacturers VALUES(8,'Zenden');
-INSERT INTO Manufacturers VALUES(10,'Converse');
-INSERT INTO Manufacturers VALUES(13,'Skechers');
-INSERT INTO Manufacturers VALUES(20,'Котофей');
-INSERT INTO Manufacturers VALUES(21,'Adidas');
-INSERT INTO Manufacturers VALUES(23,'Reima');
-INSERT INTO Manufacturers VALUES(26,'Nike');
-INSERT INTO Manufacturers VALUES(28,'Puma');
-INSERT INTO Manufacturers VALUES(32,'Salomon');
-INSERT INTO Manufacturers VALUES(33,'Asics');
+INSERT INTO Manufacturers VALUES(4,'Camper');
+INSERT INTO Manufacturers VALUES(5,'Zenden');
+INSERT INTO Manufacturers VALUES(6,'Converse');
+INSERT INTO Manufacturers VALUES(7,'Skechers');
+INSERT INTO Manufacturers VALUES(8,'Котофей');
+INSERT INTO Manufacturers VALUES(9,'Adidas');
+INSERT INTO Manufacturers VALUES(10,'Reima');
+INSERT INTO Manufacturers VALUES(11,'Nike');
+INSERT INTO Manufacturers VALUES(12,'Puma');
+INSERT INTO Manufacturers VALUES(13,'Salomon');
+INSERT INTO Manufacturers VALUES(14,'Asics');
 CREATE TABLE Sizes (
     id    INTEGER PRIMARY KEY AUTOINCREMENT,
     value INTEGER NOT NULL UNIQUE CHECK (value BETWEEN 15 AND 60)
@@ -92,35 +92,35 @@ INSERT INTO Products VALUES(1,'Туфли-лодочки Classic',1,1,'Клас�
 INSERT INTO Products VALUES(2,'Ботильоны Chelsea Woman',1,2,'Ботильоны с эластичными вставками по бокам','Натуральная кожа, текстильная подкладка, подошва ТЭП',11990.0,'IMG_002.png');
 INSERT INTO Products VALUES(3,'Балетки Soft Flat',1,3,'Мягкие балетки на каждый день','Мягкая натуральная кожа, кожаная стелька',7490.0,'IMG_003.png');
 INSERT INTO Products VALUES(4,'Сапоги зимние Nordic',1,2,'Тёплые сапоги до колена','Натуральная кожа, мех, подошва ТЭП',14990.0,'IMG_004.png');
-INSERT INTO Products VALUES(5,'Босоножки Summer Strap',1,5,'Летние босоножки с ремешком на щиколотке','Натуральная кожа, подошва ЭВА',9490.0,'IMG_005.png');
+INSERT INTO Products VALUES(5,'Босоножки Summer Strap',1,4,'Летние босоножки с ремешком на щиколотке','Натуральная кожа, подошва ЭВА',9490.0,'IMG_005.png');
 INSERT INTO Products VALUES(6,'Лоферы City',1,3,'Лоферы для офиса и города','Натуральная кожа, подошва полиуретан',10490.0,'IMG_006.png');
 INSERT INTO Products VALUES(7,'Ботинки Trek Lady',1,1,'Демисезонные ботинки с мембраной','Нубук, мембрана, подошва резина',12990.0,'IMG_007.png');
-INSERT INTO Products VALUES(8,'Сандалии Beach',1,8,'Лёгкие сандалии для лета','Искусственная кожа, текстиль',3490.0,'IMG_008.png');
-INSERT INTO Products VALUES(9,'Туфли на каблуке Evening',1,8,'Вечерние туфли, каблук 8 см','Искусственная кожа, подошва ТПУ',4990.0,'IMG_009.png');
-INSERT INTO Products VALUES(10,'Кеды Canvas Woman',1,10,'Классические кеды из ткани','Текстиль, резиновая подошва',5490.0,'IMG_010.png');
-INSERT INTO Products VALUES(11,'Ботинки Oxford Classic',11,3,'Классические оксфорды со шнуровкой','Натуральная кожа, кожаная подкладка',15990.0,'IMG_011.png');
-INSERT INTO Products VALUES(12,'Ботинки Chelsea Man',11,2,'Челси на каждый день','Натуральная кожа, подошва ТЭП',12490.0,'IMG_012.png');
-INSERT INTO Products VALUES(13,'Кроссовки Urban Walk',11,13,'Повседневные кроссовки с мягкой стелькой','Текстиль, амортизирующая стелька',7990.0,'IMG_013.png');
-INSERT INTO Products VALUES(14,'Туфли Derby',11,1,'Дерби с открытой шнуровкой','Натуральная кожа',13490.0,'IMG_014.png');
-INSERT INTO Products VALUES(15,'Ботинки зимние Arctic',11,5,'Зимние ботинки для сильных морозов','Кожа, натуральный мех, подошва резина',17990.0,'IMG_015.png');
-INSERT INTO Products VALUES(16,'Мокасины Drive',11,3,'Мокасины для вождения','Кожа, подошва резина',10990.0,'IMG_016.png');
-INSERT INTO Products VALUES(17,'Сандалии Trek Sandal',11,2,'Закрытые сандалии для походов','Кожа, текстиль',6490.0,'IMG_017.png');
-INSERT INTO Products VALUES(18,'Кеды Classic Low',11,10,'Низкие кеды','Текстиль',4990.0,'IMG_018.png');
-INSERT INTO Products VALUES(19,'Ботинки Work Pro',11,8,'Рабочие ботинки с защитным подноском','Кожа, стальной подносок',9990.0,'IMG_019.png');
-INSERT INTO Products VALUES(20,'Ботинки Kids Winter',20,20,'Зимние ботинки для детей','Мембрана, искусственный мех',5990.0,'IMG_020.png');
-INSERT INTO Products VALUES(21,'Кроссовки Kids Run',20,21,'Лёгкие кроссовки для прогулок и спорта','Сетка, синтетика',4990.0,'IMG_021.png');
-INSERT INTO Products VALUES(22,'Сандалии Kids Summer',20,20,'Летние сандалии на липучке','Искусственная кожа',2990.0,'IMG_022.png');
-INSERT INTO Products VALUES(23,'Сапоги резиновые Rain',20,23,'Резиновые сапоги для дождя','Резина, текстильная подкладка',2490.0,'IMG_023.png');
-INSERT INTO Products VALUES(24,'Ботинки School',20,3,'Школьные ботинки','Натуральная кожа',6990.0,'IMG_024.png');
-INSERT INTO Products VALUES(25,'Кеды Kids Canvas',20,10,'Детские кеды','Текстиль',3490.0,'IMG_025.png');
-INSERT INTO Products VALUES(26,'Кроссовки Air Max 270',26,26,'Кроссовки с воздушной подушкой Air','Текстиль, синтетика, амортизация Air',13990.0,'IMG_026.png');
-INSERT INTO Products VALUES(27,'Кроссовки Ultraboost Light',26,21,'Беговые кроссовки с подошвой Boost','Primeknit, подошва Boost',17990.0,'IMG_027.png');
-INSERT INTO Products VALUES(28,'Кроссовки Run Fast 3',26,28,'Кроссовки для бега','Сетка, пена ProFoam',7490.0,'IMG_028.png');
-INSERT INTO Products VALUES(29,'Бутсы Predator Club',26,21,'Футбольные бутсы для искусственного газона','Синтетика, шипы ТПУ',6990.0,'IMG_029.png');
-INSERT INTO Products VALUES(30,'Кроссовки Pegasus 41',26,26,'Универсальные беговые кроссовки','Сетка, пена React',12990.0,'IMG_030.png');
-INSERT INTO Products VALUES(31,'Кроссовки баскетбольные Court',26,26,'Баскетбольные кроссовки с высоким верхом','Кожа, текстиль',11490.0,'IMG_031.png');
-INSERT INTO Products VALUES(32,'Кроссовки Trail Master',26,32,'Трейловые кроссовки с мембраной','Мембрана, подошва Contagrip',14490.0,'IMG_032.png');
-INSERT INTO Products VALUES(33,'Кроссовки Gel Rider',26,33,'Кроссовки с гелевой амортизацией','Сетка, гель',9490.0,'IMG_033.png');
+INSERT INTO Products VALUES(8,'Сандалии Beach',1,5,'Лёгкие сандалии для лета','Искусственная кожа, текстиль',3490.0,'IMG_008.png');
+INSERT INTO Products VALUES(9,'Туфли на каблуке Evening',1,5,'Вечерние туфли, каблук 8 см','Искусственная кожа, подошва ТПУ',4990.0,'IMG_009.png');
+INSERT INTO Products VALUES(10,'Кеды Canvas Woman',1,6,'Классические кеды из ткани','Текстиль, резиновая подошва',5490.0,'IMG_010.png');
+INSERT INTO Products VALUES(11,'Ботинки Oxford Classic',2,3,'Классические оксфорды со шнуровкой','Натуральная кожа, кожаная подкладка',15990.0,'IMG_011.png');
+INSERT INTO Products VALUES(12,'Ботинки Chelsea Man',2,2,'Челси на каждый день','Натуральная кожа, подошва ТЭП',12490.0,'IMG_012.png');
+INSERT INTO Products VALUES(13,'Кроссовки Urban Walk',2,7,'Повседневные кроссовки с мягкой стелькой','Текстиль, амортизирующая стелька',7990.0,'IMG_013.png');
+INSERT INTO Products VALUES(14,'Туфли Derby',2,1,'Дерби с открытой шнуровкой','Натуральная кожа',13490.0,'IMG_014.png');
+INSERT INTO Products VALUES(15,'Ботинки зимние Arctic',2,4,'Зимние ботинки для сильных морозов','Кожа, натуральный мех, подошва резина',17990.0,'IMG_015.png');
+INSERT INTO Products VALUES(16,'Мокасины Drive',2,3,'Мокасины для вождения','Кожа, подошва резина',10990.0,'IMG_016.png');
+INSERT INTO Products VALUES(17,'Сандалии Trek Sandal',2,2,'Закрытые сандалии для походов','Кожа, текстиль',6490.0,'IMG_017.png');
+INSERT INTO Products VALUES(18,'Кеды Classic Low',2,6,'Низкие кеды','Текстиль',4990.0,'IMG_018.png');
+INSERT INTO Products VALUES(19,'Ботинки Work Pro',2,5,'Рабочие ботинки с защитным подноском','Кожа, стальной подносок',9990.0,'IMG_019.png');
+INSERT INTO Products VALUES(20,'Ботинки Kids Winter',3,8,'Зимние ботинки для детей','Мембрана, искусственный мех',5990.0,'IMG_020.png');
+INSERT INTO Products VALUES(21,'Кроссовки Kids Run',3,9,'Лёгкие кроссовки для прогулок и спорта','Сетка, синтетика',4990.0,'IMG_021.png');
+INSERT INTO Products VALUES(22,'Сандалии Kids Summer',3,8,'Летние сандалии на липучке','Искусственная кожа',2990.0,'IMG_022.png');
+INSERT INTO Products VALUES(23,'Сапоги резиновые Rain',3,10,'Резиновые сапоги для дождя','Резина, текстильная подкладка',2490.0,'IMG_023.png');
+INSERT INTO Products VALUES(24,'Ботинки School',3,3,'Школьные ботинки','Натуральная кожа',6990.0,'IMG_024.png');
+INSERT INTO Products VALUES(25,'Кеды Kids Canvas',3,6,'Детские кеды','Текстиль',3490.0,'IMG_025.png');
+INSERT INTO Products VALUES(26,'Кроссовки Air Max 270',4,11,'Кроссовки с воздушной подушкой Air','Текстиль, синтетика, амортизация Air',13990.0,'IMG_026.png');
+INSERT INTO Products VALUES(27,'Кроссовки Ultraboost Light',4,9,'Беговые кроссовки с подошвой Boost','Primeknit, подошва Boost',17990.0,'IMG_027.png');
+INSERT INTO Products VALUES(28,'Кроссовки Run Fast 3',4,12,'Кроссовки для бега','Сетка, пена ProFoam',7490.0,'IMG_028.png');
+INSERT INTO Products VALUES(29,'Бутсы Predator Club',4,9,'Футбольные бутсы для искусственного газона','Синтетика, шипы ТПУ',6990.0,'IMG_029.png');
+INSERT INTO Products VALUES(30,'Кроссовки Pegasus 41',4,11,'Универсальные беговые кроссовки','Сетка, пена React',12990.0,'IMG_030.png');
+INSERT INTO Products VALUES(31,'Кроссовки баскетбольные Court',4,11,'Баскетбольные кроссовки с высоким верхом','Кожа, текстиль',11490.0,'IMG_031.png');
+INSERT INTO Products VALUES(32,'Кроссовки Trail Master',4,13,'Трейловые кроссовки с мембраной','Мембрана, подошва Contagrip',14490.0,'IMG_032.png');
+INSERT INTO Products VALUES(33,'Кроссовки Gel Rider',4,14,'Кроссовки с гелевой амортизацией','Сетка, гель',9490.0,'IMG_033.png');
 CREATE TABLE Stock (
     product_id INTEGER NOT NULL
                REFERENCES Products(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -283,12 +283,12 @@ INSERT INTO OrderItems VALUES(27,9,21,7,1,4740.0);
 INSERT INTO OrderItems VALUES(28,10,9,13,1,4740.0);
 INSERT INTO OrderItems VALUES(29,10,4,12,1,14240.0);
 INSERT INTO OrderItems VALUES(30,10,27,14,2,17090.0);
-INSERT INTO sqlite_sequence VALUES('Sizes',38);
-INSERT INTO sqlite_sequence VALUES('Roles',22);
-INSERT INTO sqlite_sequence VALUES('Users',22);
-INSERT INTO sqlite_sequence VALUES('Categories',66);
-INSERT INTO sqlite_sequence VALUES('Manufacturers',66);
-INSERT INTO sqlite_sequence VALUES('Products',66);
+INSERT INTO sqlite_sequence VALUES('Sizes',19);
+INSERT INTO sqlite_sequence VALUES('Roles',3);
+INSERT INTO sqlite_sequence VALUES('Users',12);
+INSERT INTO sqlite_sequence VALUES('Categories',4);
+INSERT INTO sqlite_sequence VALUES('Manufacturers',14);
+INSERT INTO sqlite_sequence VALUES('Products',33);
 INSERT INTO sqlite_sequence VALUES('Orders',10);
 INSERT INTO sqlite_sequence VALUES('OrderItems',30);
 CREATE INDEX idx_users_role          ON Users(role_id);
