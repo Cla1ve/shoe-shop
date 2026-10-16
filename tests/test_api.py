@@ -11,7 +11,6 @@ import threading
 import unittest
 import urllib.error
 import urllib.request
-from datetime import date
 from http.server import ThreadingHTTPServer
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
