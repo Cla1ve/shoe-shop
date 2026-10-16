@@ -46,6 +46,16 @@ function formatPrice(value) {
     return text + ' ₽';
 }
 
+// 1 пара, 2 пары, 5 пар
+function pairs(n) {
+    const last = n % 10;
+    const lastTwo = n % 100;
+    let word = 'пар';
+    if (last === 1 && lastTwo !== 11) word = 'пара';
+    else if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) word = 'пары';
+    return n + ' ' + word;
+}
+
 function debounce(fn, delay) {
     let timer = null;
     return function (...args) {
@@ -304,7 +314,7 @@ async function openProduct(id) {
                 el('dt', {}, 'Производитель'), el('dd', {}, p.manufacturer),
                 el('dt', {}, 'Состав'), el('dd', {}, p.composition),
                 el('dt', {}, 'Описание'), el('dd', {}, p.description),
-                el('dt', {}, 'На складе'), el('dd', {}, p.stock_label + ' (' + p.total_quantity + ' пар)')),
+                el('dt', {}, 'На складе'), el('dd', {}, p.stock_label + ' (' + pairs(p.total_quantity) + ')')),
             el('div', { class: 'price-row' },
                 el('span', { class: 'price' }, formatPrice(p.price_final)),
                 p.discount ? el('span', { class: 'price-old' }, formatPrice(p.price)) : null,
