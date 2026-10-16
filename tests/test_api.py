@@ -212,6 +212,12 @@ class StaticTests(ApiTestCase):
         except urllib.error.HTTPError as err:
             self.assertEqual(err.code, 404)
 
+    def test_head_request(self):
+        req = urllib.request.Request(self.base + "/static/style.css", method="HEAD")
+        with urllib.request.urlopen(req) as resp:
+            self.assertEqual(resp.status, 200)
+            self.assertEqual(resp.read(), b"")
+
     def test_bad_json(self):
         req = urllib.request.Request(self.base + "/api/order/create", data=b"{oops", method="POST")
         with self.assertRaises(urllib.error.HTTPError) as ctx:
